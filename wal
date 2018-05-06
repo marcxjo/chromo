@@ -15,7 +15,7 @@ shopt -s nullglob nocasematch
 cache_dir="${HOME}/.cache/wal"
 pid_file="${cache_dir}/wal.pid"
 newline=$'\n'
-color_count=16
+color_count=18
 os="$(uname)"
 
 # GENERATE COLORSCHEME
@@ -83,7 +83,7 @@ get_colors() {
         colors=($(convert "${wal}"  +dither -colors $color_count -unique-colors txt:- | grep -E -o " \#.{6}"))
 
         # If imagemagick finds less than 16 colors, use a larger source number of colors.
-        while (( "${#colors[@]}" <= 15 )); do
+        while (( "${#colors[@]}" <= 17 )); do
             colors=($(convert "${wal}"  +dither -colors "$((color_count + ${index:-2}))" -unique-colors txt:- | grep -E -o " \#.{6}"))
             ((index++))
             out "colors: Imagemagick couldn't generate a $color_count color palette, trying a larger palette size ($((color_count + index)))."
@@ -125,11 +125,13 @@ set_special() {
         10)
             x_colors+="URxvt*foreground: ${2}${newline}"
             x_colors+="XTerm*foreground: ${2}${newline}"
+            sh_colors+="colorfg='${2}'${newline}"
         ;;
 
         11)
             x_colors+="URxvt*background: ${2}${newline}"
             x_colors+="XTerm*background: ${colors[0]}${newline}"
+            sh_colors+="colorbg='${2}'${newline}"
         ;;
 
         12)
@@ -141,26 +143,26 @@ set_special() {
 
 send_sequences() {
     # Create string of escape sequences to send to the terminals.
-    set_special 10  "${colors[15]}"
+    set_special 10  "${colors[17]}"
     set_special 11  "${alpha:+[${alpha}]}${colors[0]}"
-    set_special 12  "${colors[15]}"
-    set_special 13  "${colors[15]}"
+    set_special 12  "${colors[17]}"
+    set_special 13  "${colors[17]}"
     set_special 14  "${alpha:+[${alpha}]}${colors[0]}"
 
     # This escape sequence doesn't work in VTE terminals.
     [[ "$vte" != "on" ]] && set_special 708 "${alpha:+[${alpha}]}${colors[0]}"
 
-    set_color 0  "${colors[0]}"
+    set_color 0  "${colors[1]}"
 
     # If $extended_colors isn't set, only use the bright colors.
     if [[ -z "$extended_colors" ]]; then
-        set_color 1  "${colors[9]}"
-        set_color 2  "${colors[10]}"
-        set_color 3  "${colors[11]}"
-        set_color 4  "${colors[12]}"
-        set_color 5  "${colors[13]}"
-        set_color 6  "${colors[14]}"
-        set_color 7  "${colors[15]}"
+        set_color 1  "${colors[10]}"
+        set_color 2  "${colors[11]}"
+        set_color 3  "${colors[12]}"
+        set_color 4  "${colors[13]}"
+        set_color 5  "${colors[14]}"
+        set_color 6  "${colors[15]}"
+        set_color 7  "${colors[16]}"
 
         # Create a comment color based on the brightness of the background.
         case "${colors[0]:1:1}" in
@@ -172,23 +174,23 @@ send_sequences() {
             *)     set_color 8 "${colors[7]}" ;;
         esac
     else  # $extended_colors="on"
-        set_color 1  "${colors[1]}"
-        set_color 2  "${colors[2]}"
-        set_color 3  "${colors[3]}"
-        set_color 4  "${colors[4]}"
-        set_color 5  "${colors[5]}"
-        set_color 6  "${colors[6]}"
-        set_color 7  "${colors[7]}"
-        set_color 8  "${colors[8]}"
+        set_color 1  "${colors[2]}"
+        set_color 2  "${colors[3]}"
+        set_color 3  "${colors[4]}"
+        set_color 4  "${colors[5]}"
+        set_color 5  "${colors[6]}"
+        set_color 6  "${colors[7]}"
+        set_color 7  "${colors[8]}"
+        set_color 8  "${colors[9]}"
     fi
 
-    set_color 9  "${colors[9]}"
-    set_color 10 "${colors[10]}"
-    set_color 11 "${colors[11]}"
-    set_color 12 "${colors[12]}"
-    set_color 13 "${colors[13]}"
-    set_color 14 "${colors[14]}"
-    set_color 15 "${colors[15]}"
+    set_color 9  "${colors[10]}"
+    set_color 10 "${colors[11]}"
+    set_color 11 "${colors[12]}"
+    set_color 12 "${colors[13]}"
+    set_color 13 "${colors[14]}"
+    set_color 14 "${colors[15]}"
+    set_color 15 "${colors[16]}"
 
     # Set a black color that isn't affected by bold highlighting.
     sequences+="\033]4;66;${colors[0]}\007"
