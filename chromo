@@ -12,8 +12,8 @@ export LANG=C
 shopt -s nullglob nocasematch
 
 # Internal variables.
-cache_dir="${HOME}/.cache/wal"
-pid_file="${cache_dir}/wal.pid"
+cache_dir="${HOME}/.cache/chromo"
+pid_file="${cache_dir}/chromo.pid"
 newline=$'\n'
 color_count=18
 os="$(uname)"
