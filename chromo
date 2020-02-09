@@ -80,10 +80,10 @@ get_colors() {
     if [[ -f "$cache_file" ]]; then
         colors=($(< "$cache_file"))
     else
-        colors=($(convert "${wal}"  +dither -colors $color_count -unique-colors txt:- | grep -E -o " \#.{6}"))
+        new_colors=($(convert "${wal}" +dither -colors $color_count -unique-colors txt:- | grep -E -o " \#.{6}"))
 
-        # If imagemagick finds less than 16 colors, use a larger source number of colors.
-        while (( "${#colors[@]}" <= 17 )); do
+        # If imagemagick finds less than the specified number of colors, use a larger source number of colors.
+        while [[ ${#new_colors[@]} -lt ${color_count} ]]; do
             colors=($(convert "${wal}"  +dither -colors "$((color_count + ${index:-2}))" -unique-colors txt:- | grep -E -o " \#.{6}"))
             ((index++))
             out "colors: Imagemagick couldn't generate a $color_count color palette, trying a larger palette size ($((color_count + index)))."
@@ -92,8 +92,19 @@ get_colors() {
             ((index == 10)) && break
         done
 
+        colorfg=${new_colors[${#new_colors[@]}]}
+        colorbg=${new_colors[0]}
+        colors=${new_colors[@]:1:$((${#new_colors[@]} - 2))}
         # Cache the scheme.
-        printf "%s\n" "${colors[@]}" > "$cache_file"
+        printf "%s\n" "${!colorfg*}=${colorfg}" >> "$cache_file"
+        printf "%s\n" "${!colorbg*}=${colorbg}" >> "$cache_file"
+
+        i=0
+        while [[ ${i} -lt ${#new_colors[@]} ]]
+        do
+            printf "%s\n" "colors[${i}]=${colors[$i]}" >> "$cache_file"
+            i=$(( ${i} + 1 ))
+        done
     fi
 
     out "colors: Generated colorscheme"
