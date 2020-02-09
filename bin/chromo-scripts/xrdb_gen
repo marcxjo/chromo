@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Xrdb generator for themer.
+
+cat <<-XRDB
+	URxvt*foreground: ${colorfg}
+	XTerm*foreground: ${colorfg}
+	URxvt*background: ${colorbg}
+	XTerm*background: ${colorbg}
+	URxvt*cursorColor: ${colorfg}
+	XTerm*cursorColor: ${colorbg}
+	*color0: ${color0}
+	*.color0: ${color0}
+	*color1: ${color1}
+	*.color1: ${color1}
+	*color2: ${color2}
+	*.color2: ${color2}
+	*color3: ${color3}
+	*.color3: ${color3}
+	*color4: ${color4}
+	*.color4: ${color4}
+	*color5: ${color5}
+	*.color5: ${color5}
+	*color6: ${color6}
+	*.color6: ${color6}
+	*color7: ${color7}
+	*.color7: ${color7}
+	*color8: ${color7}
+	*.color8: ${color8}
+	*color9: ${color9}
+	*.color9: ${color9}
+	*color10: ${color10}
+	*.color10: ${color10}
+	*color11: ${color11}
+	*.color11: ${color11}
+	*color12: ${color12}
+	*.color12: ${color12}
+	*color13: ${color13}
+	*.color13: ${color13}
+	*color14: ${color14}
+	*.color14: ${color14}
+	*color15: ${color15}
+	*.color15: ${color15}
+	*color66: ${colorbg}
+	rofi.color-window: argb:FF${colorbg:1}, ${colorbg}, ${color9}
+	rofi.color-normal: argb:FF${colorbg:1}, ${color14}, ${colorbg}, ${color9}, ${colorbg}
+	rofi.color-active: argb:FF${colorbg:1}, ${color14}, ${colorbg}, ${color9}, ${colorbg}
+	rofi.color-urgent: argb:FF${colorbg:1}, ${color8}, ${colorbg}, ${color8}, ${color14}
+	emacs*background: ${colorbg}
+	emacs*foreground: ${color14}
+XRDB
